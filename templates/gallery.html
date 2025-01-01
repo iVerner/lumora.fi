@@ -1,0 +1,12 @@
+<!-- Thumbnails -->
+<section id="thumbnails">
+
+    {% for asset in section.extra.references -%}
+    {%- if asset is matching("[.](jpg|png)$") -%}
+    {% set image = resize_image(path=asset, width=360, height=225) %}
+    <article>
+        <a class="thumbnail" href="{{ get_url(path=asset) }}" data-position="center center"><img src="{{ image.url }}" alt="" /></a>
+    </article>
+    {%- endif %}
+    {%- endfor %}
+</section>
