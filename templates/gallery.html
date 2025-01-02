@@ -2,11 +2,11 @@
 <section id="thumbnails">
 
     {% for asset in section.extra.references -%}
-    {%- if asset is matching("[.](jpg|png)$") -%}
-    {% set image = resize_image(path=asset, width=360, height=225) %}
+    {% set thumbnail_path = "gallery/thumbnails/" ~ asset %}
+    {% set meta = get_image_metadata(path=thumbnail_path) %}
     <article>
-        <a class="thumbnail" href="{{ get_url(path=asset) }}" data-position="center center"><img src="{{ image.url }}" alt="" /></a>
+        <a class="thumbnail" href="gallery/{{ asset }}" data-position="center center"><img src="gallery/thumbnails/{{ asset }}"
+                width="{{ meta.width }}" height="{{ meta.height }}" alt="" /></a>
     </article>
-    {%- endif %}
     {%- endfor %}
 </section>
