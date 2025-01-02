@@ -1,12 +1,12 @@
 <!-- Thumbnails -->
 <section id="thumbnails">
-
     {% for asset in section.extra.references -%}
+    {% set image_path = "gallery/" ~ asset %}
     {% set thumbnail_path = "gallery/thumbnails/" ~ asset %}
     {% set meta = get_image_metadata(path=thumbnail_path) %}
     <article>
-        <a class="thumbnail" href="gallery/{{ asset }}" data-position="center center"><img src="gallery/thumbnails/{{ asset }}"
-                width="{{ meta.width }}" height="{{ meta.height }}" alt="" /></a>
+        <a class="thumbnail" href="{{ image_path }}" data-position="center center" aria-label="Show the full image"><img src="{{ thumbnail_path }}"
+                width="{{ meta.width }}" height="{{ meta.height }}" alt="Image thumbnail"></a>
     </article>
     {%- endfor %}
 </section>

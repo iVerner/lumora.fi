@@ -4,18 +4,20 @@
 	html5up.net | @ajlkn
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 -->
-<html>
+<html lang="en">
 
 <head>
 	<title>{{ section.title }}</title>
+	<meta charset="utf-8" />
+	<meta name="description" content="Lumora. Photo gallery. Photographer Ignat Kudriavtsev. Boudoir and nude photography. Helsinki, Finland.">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 	<link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
 	<link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
 	<link rel="shortcut icon" href="/favicon/favicon.ico" />
 	<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
 	<link rel="manifest" href="/favicon/site.webmanifest" />
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 	<link rel="stylesheet" href="css/main.css" />
+	<link rel="preload" fetchpriority="high" as="image" href="gallery/0001.jpg" type="image/jpeg">
 	<noscript>
 		<link rel="stylesheet" href="css/noscript.css" />
 	</noscript>
@@ -29,14 +31,11 @@
 		<!-- Header -->
 		<header id="header">
 			<h1>{{ section.title }}</h1>
-			<h2>Boudoir and nu photography.</h2>
+			<h2>Boudoir and nude photography.</h2>
 			<p>Photographs by Ignat Kudriavtsev.</p>
 			<p>Helsinki, Finland</p>
 			<ul class="icons">
-				<!-- <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-				<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-				<li><a href="#" class="icon brands fa-github"><span class="label">Github</span></a></li> -->
-				<li><a href="mailto:ignat@lumora.fi" class="icon fa-envelope"><span class="label">Email</span></a></li>
+				<li><a href="mailto:ignat@lumora.fi" class="icon fa-envelope" aria-label="Send the e-mail"><span class="label">Email</span></a></li>
 			</ul>
 		</header>
 
@@ -56,7 +55,7 @@
 	<script src="js/jquery.min.js"></script>
 	<script src="js/browser.min.js"></script>
 	<script src="js/breakpoints.min.js"></script>
-	<script src="js/main.js"></script>
+	<script src="js/main.min.js"></script>
 
 </body>
 
