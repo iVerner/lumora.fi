@@ -23,24 +23,22 @@ install:
 
 .PHONY: resize
 resize:
-	rm -f static/gallery/*.jpg
-	rm -f static/gallery/*.webp
-	rm -f static/gallery/thumbnails/*
-	echo $(GALLERY_FILES)
+	find static/gallery -not -type d -delete
+
 	for p in  $(GALLERY_FILES); \
     do \
       echo $$p ; \
-	  $(call prepare_full_image,$$p); \
+	  $(call prepare_full_image_webp,$$p); \
 	  $(call prepare_thumbnail,$$p); \
 	exiftool -all= -overwrite_original static/gallery/thumbnails/$$p.jpg; \
-	exiftool -all= -Copyright=$(COPYRIGHT) -IPTC:CopyrightNotice=$(COPYRIGHT) -Rights=$(COPYRIGHT) -Credit=$(COPYRIGHT) -Creator=$(COPYRIGHT) -Author=$(COPYRIGHT) -Contact=$(CONTACT) -overwrite_original static/gallery/$$p.jpg; \
+	exiftool -all= -Copyright=$(COPYRIGHT) -IPTC:CopyrightNotice=$(COPYRIGHT) -Rights=$(COPYRIGHT) -Credit=$(COPYRIGHT) -Creator=$(COPYRIGHT) -Author=$(COPYRIGHT) -Contact=$(CONTACT) -overwrite_original static/gallery/$$p.webp; \
     done
-
 
 .PHONY: build
 build: resize
 	echo "$$header" > content/_index.md
-	ls static/gallery/*.jpg | awk '{printf "\"%s\"",$$1}' | sed 's/""/","/g' | sed 's/static\/gallery\///g' >> content/_index.md
+	echo 'full_images = [' $(call list_filenames,static/gallery) ']' >> content/_index.md
+	echo 'thumbnails = [' $(call list_filenames,static/gallery/thumbnails) ']' >> content/_index.md
 	echo "$$footer" >> content/_index.md
 
 	zola build
@@ -65,14 +63,17 @@ define header
 +++
 title="Lumora"
 [extra]
-references = [
 endef
 export header
+
 define footer
-]
 +++
 endef
 export footer
+
+define list_filenames
+	'$(shell find $(1) -maxdepth 1 -not -type d -and -not -name '.*' | sort | awk '{printf "\"%s\"",$$1}' | sed 's/""/","/g' | sed 's/static\///g')'
+endef
 
 define prepare_full_image
 	magick gallery/$(1).jpg -fill white  -undercolor '#00000080' -gravity SouthEast -annotate +0+5 $(COPYRIGHT) \

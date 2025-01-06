@@ -1,5 +1,6 @@
 +++
 title="Lumora"
 [extra]
-references = []
+full_images = []
+thumbnails = []
 +++
