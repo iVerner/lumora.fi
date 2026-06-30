@@ -1,4 +1,11 @@
 public/
 gallery/
+content/_index.md
 static/gallery/
 static/processed_images
+/Figma design/
+/.idea/.gitignore
+/.idea/lumora.fi.iml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/vcs.xml

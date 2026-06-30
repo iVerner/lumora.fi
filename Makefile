@@ -1,15 +1,42 @@
 envelope_code := U+F0E0
 brand_codes := U+F0E1,U+F09B,U+F16D,U+F39E,U+F2C6,U+F189,U+E61B,U+F167
 GALLERY_FILES := $(shell ls gallery/*.jpg | sed 's/gallery\///g' | sed 's/.jpg//g')
+UNAME_S := $(shell uname -s)
+
+.DEFAULT_GOAL := help
+
+CONTAINER_CLI ?= container
+CONTAINER_IMAGE ?= lumora-build
+CONTAINER_PLATFORM ?= linux/amd64
+CONTAINER_RUN_PLATFORM_FLAGS ?= --platform $(CONTAINER_PLATFORM) --rosetta
+CONTAINER_RUN ?= $(CONTAINER_CLI) run --remove \
+	$(CONTAINER_RUN_PLATFORM_FLAGS) \
+	--user "$$(id -u):$$(id -g)" \
+	-e HOME=/tmp \
+	-e npm_config_cache=/tmp/.npm \
+	-e CLOUDFLARE_API_TOKEN \
+	-v "$$(pwd):/site" \
+	-w /site
+
+ifeq ($(UNAME_S),Darwin)
+SED_INPLACE ?= sed -i ''
+else
+SED_INPLACE ?= sed -i
+endif
 
 FINAL_RESOLUTION:=2000x1250
 THUMBNAIL_RESOLUTION:= 256x160^
 # 360x225^
 COPYRIGHT:="(c) Ignat Kudriavtsev"
 CONTACT:="ignat@lumora.fi"
+WRANGLER ?= npx wrangler
+
+.PHONY: help
+help:
+	@awk -F ':|##' '/^[^\t].+?:.*?##/ {printf "\033[36m%-30s\033[0m %s\n", $$1, $$NF }' $(MAKEFILE_LIST)
 
 .PHONY: install
-install:
+install: ## Install local host build and deploy dependencies
 	brew update
 	brew upgrade
 	brew install zola
@@ -22,7 +49,7 @@ install:
 	npm install terser -g
 
 .PHONY: resize
-resize:
+resize: ## Regenerate processed gallery images and thumbnails
 	find static/gallery -not -type d -delete
 
 	for p in  $(GALLERY_FILES); \
@@ -35,7 +62,7 @@ resize:
     done
 
 .PHONY: build
-build: resize
+build: resize ## Regenerate gallery content and build the Zola site
 	echo "$$header" > content/_index.md
 	echo 'full_images = [' $(call list_filenames,static/gallery) ']' >> content/_index.md
 	echo 'thumbnails = [' $(call list_filenames,static/gallery/thumbnails) ']' >> content/_index.md
@@ -43,21 +70,65 @@ build: resize
 
 	zola build
 
+.PHONY: build-fast
+build-fast: ## Build the Zola site without regenerating images
+	zola build
+
 .PHONY: minify
-minify: build
+minify: build ## Build and minify production assets
 	cleancss -O2 --output ./public/css/main.min.css ./public/css/main.css
 	rm -f public/css/main.css
-	sed -i '' 's/css\/main.css/css\/main.min.css/g' ./public/index.html
+	$(SED_INPLACE) 's/css\/main.css/css\/main.min.css/g' ./public/index.html
 
 	$(call subset_font,fa-regular-400,$(envelope_code))
 
+.PHONY: format
+format: ## Format Markdown, TOML, and JSON files
+	dprint fmt
+
+.PHONY: format-check
+format-check: ## Check Markdown, TOML, and JSON formatting
+	dprint check
+
 .PHONY: deploy
-deploy: minify
-	npx wrangler pages deploy public --project-name=lumora-fi
+deploy: minify ## Deploy production build to Cloudflare Pages
+	$(WRANGLER) pages deploy public --project-name=lumora-fi
 
 .PHONY: preview
-preview: minify
-	npx wrangler pages deploy public --project-name=lumora-fi --branch=preview
+preview: minify ## Deploy preview build to Cloudflare Pages preview branch
+	$(WRANGLER) pages deploy public --project-name=lumora-fi --branch=preview
+
+.PHONY: docker-image
+docker-image: ## Build the local apple/container build image
+	$(CONTAINER_CLI) build --platform $(CONTAINER_PLATFORM) -t $(CONTAINER_IMAGE) .
+
+.PHONY: docker-build
+docker-build: docker-image ## Build the site inside apple/container
+	$(CONTAINER_RUN) $(CONTAINER_IMAGE) make build
+
+.PHONY: docker-build-fast
+docker-build-fast: docker-image ## Run zola build inside apple/container without regenerating images
+	$(CONTAINER_RUN) $(CONTAINER_IMAGE) make build-fast
+
+.PHONY: docker-minify
+docker-minify: docker-image ## Build and minify production assets inside apple/container
+	$(CONTAINER_RUN) $(CONTAINER_IMAGE) make minify
+
+.PHONY: docker-format
+docker-format: docker-image ## Format Markdown, TOML, and JSON files inside apple/container
+	$(CONTAINER_RUN) $(CONTAINER_IMAGE) make format
+
+.PHONY: docker-format-check
+docker-format-check: docker-image ## Check Markdown, TOML, and JSON formatting inside apple/container
+	$(CONTAINER_RUN) $(CONTAINER_IMAGE) make format-check
+
+.PHONY: docker-preview
+docker-preview: docker-image ## Deploy a Cloudflare Pages preview from apple/container
+	$(CONTAINER_RUN) $(CONTAINER_IMAGE) make WRANGLER=wrangler preview
+
+.PHONY: docker-deploy
+docker-deploy: docker-image ## Deploy production to Cloudflare Pages from apple/container
+	$(CONTAINER_RUN) $(CONTAINER_IMAGE) make WRANGLER=wrangler deploy
 
 define header
 +++
@@ -96,10 +167,10 @@ endef
 
 define subset_font
 	pyftsubset "./static/webfonts/$(1).ttf" --output-file="public/webfonts/$(1).subset.ttf" --layout-features='*' --unicodes=$(2)
-	sed -i '' 's/$(1).ttf/$(1).subset.ttf/g' ./public/css/main.min.css
+	$(SED_INPLACE) 's/$(1).ttf/$(1).subset.ttf/g' ./public/css/main.min.css
 	rm -f public/webfonts/$(1).ttf
 
 	pyftsubset "./static/webfonts/$(1).ttf" --output-file="public/webfonts/$(1).subset.woff2" --layout-features='*' --flavor=woff2 --with-zopfli --unicodes=$(2)
-	sed -i '' 's/$(1).woff2/$(1).subset.woff2/g' ./public/css/main.min.css
+	$(SED_INPLACE) 's/$(1).woff2/$(1).subset.woff2/g' ./public/css/main.min.css
 	rm -f public/webfonts/$(1).woff2
 endef
