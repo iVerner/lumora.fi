@@ -1,6 +1,10 @@
 envelope_code := U+F0E0
 brand_codes := U+F0E1,U+F09B,U+F16D,U+F39E,U+F2C6,U+F189,U+E61B,U+F167
-GALLERY_FILES := $(shell ls gallery/*.jpg | sed 's/gallery\///g' | sed 's/.jpg//g')
+GALLERY_SOURCE_DIR := gallery
+GALLERY_OUTPUT_DIR := static/gallery
+PORTFOLIO_CONTENT_DIR := content/portfolio
+ALBUM_DIRS := $(shell find $(GALLERY_SOURCE_DIR) -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort)
+ALBUM_SLUGS := $(notdir $(ALBUM_DIRS))
 UNAME_S := $(shell uname -s)
 
 .DEFAULT_GOAL := help
@@ -50,24 +54,40 @@ install: ## Install local host build and deploy dependencies
 
 .PHONY: resize
 resize: ## Regenerate processed gallery images and thumbnails
-	find static/gallery -not -type d -delete
+	@test -n "$(ALBUM_SLUGS)" || { echo "No album directories found under $(GALLERY_SOURCE_DIR)/" >&2; exit 1; }
+	@for album in $(ALBUM_DIRS); do \
+		test -f "$$album/album.toml" || { echo "Missing album sidecar: $$album/album.toml" >&2; exit 1; }; \
+	done
+	rm -rf $(GALLERY_OUTPUT_DIR)
+	@for album in $(ALBUM_DIRS); do \
+		slug=$$(basename "$$album"); \
+		mkdir -p "$(GALLERY_OUTPUT_DIR)/$$slug/thumbnails"; \
+		for source in "$$album"/*.jpg; do \
+			test -e "$$source" || continue; \
+			name=$$(basename "$$source" .jpg); \
+			echo "$$slug/$$name"; \
+			$(call prepare_full_image_webp,$$source,$(GALLERY_OUTPUT_DIR)/$$slug/$$name.webp); \
+			$(call prepare_thumbnail,$$source,$(GALLERY_OUTPUT_DIR)/$$slug/thumbnails/$$name.jpg); \
+			exiftool -all= -overwrite_original "$(GALLERY_OUTPUT_DIR)/$$slug/thumbnails/$$name.jpg"; \
+			exiftool -all= -Copyright=$(COPYRIGHT) -IPTC:CopyrightNotice=$(COPYRIGHT) -Rights=$(COPYRIGHT) -Credit=$(COPYRIGHT) -Creator=$(COPYRIGHT) -Author=$(COPYRIGHT) -Contact=$(CONTACT) -overwrite_original "$(GALLERY_OUTPUT_DIR)/$$slug/$$name.webp"; \
+		done; \
+	done
 
-	for p in  $(GALLERY_FILES); \
-    do \
-      echo $$p ; \
-	  $(call prepare_full_image_webp,$$p); \
-	  $(call prepare_thumbnail,$$p); \
-	exiftool -all= -overwrite_original static/gallery/thumbnails/$$p.jpg; \
-	exiftool -all= -Copyright=$(COPYRIGHT) -IPTC:CopyrightNotice=$(COPYRIGHT) -Rights=$(COPYRIGHT) -Credit=$(COPYRIGHT) -Creator=$(COPYRIGHT) -Author=$(COPYRIGHT) -Contact=$(CONTACT) -overwrite_original static/gallery/$$p.webp; \
-    done
+.PHONY: content
+content: ## Regenerate generated portfolio content stubs
+	@test -n "$(ALBUM_SLUGS)" || { echo "No album directories found under $(GALLERY_SOURCE_DIR)/" >&2; exit 1; }
+	@for album in $(ALBUM_DIRS); do \
+		test -f "$$album/album.toml" || { echo "Missing album sidecar: $$album/album.toml" >&2; exit 1; }; \
+	done
+	rm -rf $(PORTFOLIO_CONTENT_DIR)
+	mkdir -p $(PORTFOLIO_CONTENT_DIR)
+	printf '+++\ntitle = "Portfolio"\ntemplate = "portfolio.html"\n+++\n' > $(PORTFOLIO_CONTENT_DIR)/_index.md
+	@for slug in $(ALBUM_SLUGS); do \
+		printf '+++\ntemplate = "album.html"\n\n[extra]\nslug = "%s"\n+++\n' "$$slug" > "$(PORTFOLIO_CONTENT_DIR)/$$slug.md"; \
+	done
 
 .PHONY: build
-build: resize ## Regenerate gallery content and build the Zola site
-	echo "$$header" > content/_index.md
-	echo 'full_images = [' $(call list_filenames,static/gallery) ']' >> content/_index.md
-	echo 'thumbnails = [' $(call list_filenames,static/gallery/thumbnails) ']' >> content/_index.md
-	echo "$$footer" >> content/_index.md
-
+build: resize content ## Regenerate gallery assets, portfolio stubs, and build the Zola site
 	zola build
 
 .PHONY: build-fast
@@ -130,39 +150,23 @@ docker-preview: docker-image ## Deploy a Cloudflare Pages preview from apple/con
 docker-deploy: docker-image ## Deploy production to Cloudflare Pages from apple/container
 	$(CONTAINER_RUN) $(CONTAINER_IMAGE) make WRANGLER=wrangler deploy
 
-define header
-+++
-title="Lumora"
-[extra]
-endef
-export header
-
-define footer
-+++
-endef
-export footer
-
-define list_filenames
-	'$(shell find $(1) -maxdepth 1 -not -type d -and -not -name '.*' | sort | awk '{printf "\"%s\"",$$1}' | sed 's/""/","/g' | sed 's/static\///g')'
-endef
-
 define prepare_full_image
-	magick gallery/$(1).jpg -fill white  -undercolor '#00000080' -gravity SouthEast -annotate +0+5 $(COPYRIGHT) \
+	magick "$(1)" -fill white  -undercolor '#00000080' -gravity SouthEast -annotate +0+5 $(COPYRIGHT) \
 		-background white -gravity center -extent $(FINAL_RESOLUTION) \
-		static/gallery/$(1).jpg
+		"$(2)"
 endef
 
 define prepare_full_image_webp
-	magick gallery/$(1).jpg -fill white  -undercolor '#00000080' -gravity SouthEast -annotate +0+5 $(COPYRIGHT) \
+	magick "$(1)" -fill white  -undercolor '#00000080' -gravity SouthEast -annotate +0+5 $(COPYRIGHT) \
 		-background white -gravity center -extent $(FINAL_RESOLUTION) \
 		-quality 90 -define webp:lossless=false -define webp:method=6 \
-		static/gallery/$(1).webp
+		"$(2)"
 endef
 
 define prepare_thumbnail
-	magick gallery/$(1).jpg -adaptive-resize $(THUMBNAIL_RESOLUTION) \
+	magick "$(1)" -adaptive-resize $(THUMBNAIL_RESOLUTION) \
 		-extent $(THUMBNAIL_RESOLUTION) \
-		static/gallery/thumbnails/$(1).jpg
+		"$(2)"
 endef
 
 define subset_font
