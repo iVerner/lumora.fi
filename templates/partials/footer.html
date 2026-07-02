@@ -1,0 +1,16 @@
+<footer id="footer">
+	<div class="footer-brand">
+		<a href="/" aria-label="{{ config.extra.home_aria_label }}">{{ config.extra.brand }}</a>
+		<p>{{ config.extra.tagline }}</p>
+		<p>{{ config.extra.location }}</p>
+	</div>
+	<nav class="footer-nav" aria-label="{{ config.extra.secondary_nav_label }}">
+		{% for item in config.extra.footer_nav %}
+		<a href="{{ item.url }}">{{ item.label }}</a>
+		{% endfor %}
+	</nav>
+	<div class="footer-contact">
+		<a href="mailto:{{ config.extra.email }}">{{ config.extra.email }}</a>
+		<p>&copy; {{ config.extra.your_name }}.</p>
+	</div>
+</footer>

@@ -1,0 +1,13 @@
+{% set cover_path = "gallery/" ~ album_card_slug ~ "/covers/" ~ album_card_cover ~ ".webp" %}
+<article class="album-card">
+	<a href="{{ album_card_permalink | safe }}" aria-label="Open {{ album_card_title }}">
+		<img src="/{{ cover_path }}" width="1000" height="1250" alt="{{ album_card_title }}" loading="{% if album_card_is_priority | default(value=false) %}eager{% else %}lazy{% endif %}"{% if album_card_is_priority | default(value=false) %} fetchpriority="high"{% endif %} style="object-position: {{ album_card_cover_position }};">
+		<span class="album-card__body">
+			<span class="album-card__meta">
+				<span class="album-card__title">{{ album_card_title }}</span>
+				{% if album_card_year %}<span class="album-card__year">{{ album_card_year }}</span>{% endif %}
+			</span>
+			<span class="album-card__description">{{ album_card_description }}</span>
+		</span>
+	</a>
+</article>

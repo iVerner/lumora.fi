@@ -1,12 +1,12 @@
-public/
-gallery/
-content/_index.md
-content/portfolio/
-static/gallery/
-static/processed_images
-/Figma design/
 /.idea/.gitignore
 /.idea/lumora.fi.iml
 /.idea/misc.xml
 /.idea/modules.xml
 /.idea/vcs.xml
+/Figma design/
+content/portfolio/
+gallery/
+public/
+static/documents/
+static/gallery/
+static/processed_images

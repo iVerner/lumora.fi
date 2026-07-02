@@ -1,56 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}{% set album = load_data(path="gallery/" ~ page.extra.slug ~ "/album.toml") %}{{ album.title }} | Lumora{% endblock title %}
+{% block description %}{% set album = load_data(path="gallery/" ~ page.extra.slug ~ "/album.toml") %}{{ album.description }}{% endblock description %}
+{% block og_type %}article{% endblock og_type %}
+{% block og_title %}{% set album = load_data(path="gallery/" ~ page.extra.slug ~ "/album.toml") %}{{ album.title }} | Lumora{% endblock og_title %}
+{% block og_description %}{% set album = load_data(path="gallery/" ~ page.extra.slug ~ "/album.toml") %}{{ album.description }}{% endblock og_description %}
+{% block og_image %}{% set album = load_data(path="gallery/" ~ page.extra.slug ~ "/album.toml") %}{% set album_dimensions = load_data(path="static/gallery/" ~ page.extra.slug ~ "/dimensions.json") %}{{ config.base_url }}/gallery/{{ page.extra.slug }}/{{ album_dimensions.cover_seq }}.webp{% endblock og_image %}
+
+{% block styles %}
+<link rel="stylesheet" href="/vendor/photoswipe/photoswipe.css" />
+{% endblock styles %}
+
+{% block content %}
 {% set album = load_data(path="gallery/" ~ page.extra.slug ~ "/album.toml") %}
-<!DOCTYPE HTML>
-<html lang="en">
+{% set album_year = album.year | default(value="") %}
+<header id="header" class="page-header page-header--wide album-header">
+	{% if album_year %}<p class="eyebrow">{{ album_year }}</p>{% endif %}
+	<h1>{{ album.title }}</h1>
+	<p>{{ album.description }}</p>
+	<p><a class="text-link" href="/portfolio/">{{ config.extra.portfolio_back_label }}</a></p>
+</header>
 
-<head>
-	<title>{{ album.title }} | Lumora</title>
-	<meta charset="utf-8" />
-	<meta name="description" content="{{ album.description }}">
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-	<link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
-	<link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
-	<link rel="shortcut icon" href="/favicon/favicon.ico" />
-	<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
-	<link rel="manifest" href="/favicon/site.webmanifest" />
-	<link rel="stylesheet" href="/css/main.css" />
-	<noscript>
-		<link rel="stylesheet" href="/css/noscript.css" />
-	</noscript>
-</head>
+{% include "partials/gallery-grid.html" %}
+{% endblock content %}
 
-<body class="is-preload-0 is-preload-1 is-preload-2">
-	<div id="main">
-		<header id="header">
-			<h1>{{ album.title }}</h1>
-			<p>{{ album.description }}</p>
-			<p><a href="/portfolio/">Portfolio</a></p>
-		</header>
-
-		<section id="thumbnails">
-			{% for image in album.images %}
-			{% set full_file = image.file | replace(from=".jpg", to=".webp") %}
-			{% set full_path = "gallery/" ~ page.extra.slug ~ "/" ~ full_file %}
-			{% set thumbnail_path = "gallery/" ~ page.extra.slug ~ "/thumbnails/" ~ image.file %}
-			<article>
-				<a class="thumbnail" href="/{{ full_path }}" data-position="center center" aria-label="Show {{ image.alt }}">
-					<img src="/{{ thumbnail_path }}" alt="{{ image.alt }}">
-				</a>
-			</article>
-			{% endfor %}
-		</section>
-
-		<footer id="footer">
-			<ul class="copyright">
-				<li>&copy; {{ config.extra.your_name }}.</li>
-				<li>Design: <a href="http://html5up.net">HTML5 UP</a>.</li>
-			</ul>
-		</footer>
-	</div>
-
-	<script src="/js/jquery.min.js"></script>
-	<script src="/js/browser.min.js"></script>
-	<script src="/js/breakpoints.min.js"></script>
-	<script src="/js/main.min.js"></script>
-</body>
-
-</html>
+{% block scripts %}
+<script type="module" src="/js/photoswipe-gallery.js"></script>
+{% endblock scripts %}

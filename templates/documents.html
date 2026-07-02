@@ -1,0 +1,28 @@
+{% extends "page.html" %}
+
+{% block content %}
+<header id="header" class="page-header">
+	<p class="eyebrow">{{ page.extra.header_eyebrow }}</p>
+	<h1>{{ page.title }}</h1>
+	<p>{{ page.extra.header_text }}</p>
+</header>
+
+<section class="documents-layout" aria-label="{{ page.extra.documents_label }}">
+	{% for document in page.extra.documents %}
+	<article class="document-card">
+		<div>
+			<p class="eyebrow">{{ document.eyebrow }}</p>
+			<h2>{{ document.title }}</h2>
+			<p>{{ document.text }}</p>
+		</div>
+		<a class="button" href="{{ document.url }}">{{ document.label }}</a>
+	</article>
+	{% endfor %}
+</section>
+
+<section class="page-content page-content--narrow documents-note" aria-label="{{ page.extra.notes_label }}">
+	{% for note in page.extra.notes %}
+	<p>{{ note }}</p>
+	{% endfor %}
+</section>
+{% endblock content %}

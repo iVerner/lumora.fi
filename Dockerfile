@@ -12,6 +12,7 @@ RUN apt-get update \
 		imagemagick \
 		libimage-exiftool-perl \
 		python3 \
+		python3-reportlab \
 		xz-utils \
 	&& case "${TARGETARCH:-$(dpkg --print-architecture)}" in \
 		amd64) zola_arch="x86_64-unknown-linux-gnu" ;; \

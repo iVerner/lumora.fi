@@ -13,5 +13,98 @@ build_search_index = false
 highlight_code = false
 
 [extra]
-# Put all your custom variables here
+brand = "Lumora"
+tagline = "Boudoir and fine art nude photography"
+location = "Helsinki, Finland"
 your_name = "Ignat Kudriavtsev"
+email = "ignat@lumora.fi"
+default_description = "Lumora. Boudoir and fine art nude photography by Ignat Kudriavtsev in Helsinki, Finland."
+home_aria_label = "Lumora - return to homepage"
+menu_label = "Menu"
+primary_nav_label = "Primary navigation"
+secondary_nav_label = "Secondary navigation"
+portfolio_back_label = "All series"
+portfolio_description = "Lumora portfolio albums by Ignat Kudriavtsev. Boudoir and nude photography in Helsinki, Finland."
+portfolio_eyebrow = "Portfolio"
+portfolio_heading = "Series & Albums"
+portfolio_intro = "Each album represents a distinct visual collaboration - a series with its own light, mood, and intention."
+home_eyebrow = "Helsinki, Finland"
+home_meta_title = "Lumora | Boudoir and fine art nude photography in Helsinki"
+home_hero_heading = "Boudoir and fine art nude photography."
+home_hero_text = "Intimate, private, collaborative portrait work by Ignat Kudriavtsev."
+home_intro = "Lumora is a quiet portfolio of boudoir and fine art nude photography, built around trust, clear boundaries, and a slow collaborative process. Current collaborations are TFP only."
+home_featured_heading = "Selected work"
+home_featured_link_text = "All series"
+home_process_link_text = "Read about the full process"
+home_approach_label = "Approach"
+home_featured_label = "Selected work"
+home_process_label = "Process overview"
+
+[[extra.home_hero_actions]]
+label = "View portfolio"
+url = "/portfolio/"
+class = "button primary"
+
+[[extra.home_hero_actions]]
+label = "Apply for TFP"
+url = "/tfp/"
+class = "button"
+
+[[extra.home_process_teasers]]
+number = "01"
+title = "We talk first"
+text = "Every shoot begins with a conversation about comfort, intention, privacy, and boundaries."
+
+[[extra.home_process_teasers]]
+number = "02"
+title = "The session is unhurried"
+text = "The pace is collaborative. You can pause, adjust, or stop at any point."
+
+[[extra.home_process_teasers]]
+number = "03"
+title = "Publication is consent-based"
+text = "Images are reviewed before publication, and nothing is shared without written approval."
+
+[[extra.primary_nav]]
+label = "Portfolio"
+url = "/portfolio/"
+
+[[extra.primary_nav]]
+label = "TFP"
+url = "/tfp/"
+
+[[extra.primary_nav]]
+label = "Process"
+url = "/process/"
+
+[[extra.primary_nav]]
+label = "About"
+url = "/about/"
+
+[[extra.primary_nav]]
+label = "Contact"
+url = "/contact/"
+
+[[extra.footer_nav]]
+label = "Portfolio"
+url = "/portfolio/"
+
+[[extra.footer_nav]]
+label = "TFP"
+url = "/tfp/"
+
+[[extra.footer_nav]]
+label = "Process"
+url = "/process/"
+
+[[extra.footer_nav]]
+label = "About"
+url = "/about/"
+
+[[extra.footer_nav]]
+label = "Contact"
+url = "/contact/"
+
+[[extra.footer_nav]]
+label = "Documents"
+url = "/documents/"

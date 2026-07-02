@@ -1,9 +1,3 @@
-///
-/// Lens by HTML5 UP
-/// html5up.net | @ajlkn
-/// Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
-///
-
 /* Button */
 
 	input[type="submit"],
@@ -19,46 +13,46 @@
 		));
 		background-color: transparent;
 		border-radius: _size(border-radius);
-		border: solid 1px _palette(border);
+		border: solid 1px _palette(fg-bold);
 		color: _palette(fg-bold);
 		cursor: pointer;
 		display: inline-block;
+		font-size: 0.75rem;
+		font-weight: _font(weight-bold);
+		letter-spacing: 0.2em;
 		line-height: 1;
-		padding: 0.75em 1.5em;
+		padding: 1.1em 2.1em;
 		text-align: center;
 		text-decoration: none;
+		text-transform: uppercase;
 		white-space: nowrap;
 
 		&:hover {
-			border-color: _palette(accent);
-			color: _palette(accent);
+			background-color: _palette(fg-bold);
+			border-color: _palette(fg-bold);
+			color: _palette(bg);
 
 			&:active {
-				background-color: transparentize(_palette(accent), 0.85);
+				background-color: transparentize(_palette(accent), 0.9);
 			}
 		}
 
-		&.icon {
-			padding-left: 1.35em;
+		&.primary {
+			background-color: _palette(fg-bold);
+			border-color: _palette(fg-bold);
+			color: _palette(bg);
 
-			&:before {
-				margin-right: 0.5em;
+			&:visited {
+				color: _palette(bg);
+			}
+
+			&:hover {
+				background-color: _palette(accent);
+				border-color: _palette(accent);
+				color: _palette(bg);
 			}
 		}
 
-		&.fit {
-			width: 100%;
-		}
-
-		&.small {
-			font-size: 0.8em;
-		}
-
-		&.large {
-			font-size: 1.35em;
-		}
-
-		&.disabled,
 		&:disabled {
 			@include vendor('pointer-events', 'none');
 			opacity: 0.25;

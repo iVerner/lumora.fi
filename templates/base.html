@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+	<title>{% block title %}Lumora{% endblock title %}</title>
+	<meta charset="utf-8" />
+	<meta name="description" content="{% block description %}{{ config.extra.default_description }}{% endblock description %}">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="canonical" href="{% block canonical %}{{ current_url | default(value=config.base_url) }}{% endblock canonical %}" />
+	<meta property="og:site_name" content="Lumora" />
+	<meta property="og:type" content="{% block og_type %}website{% endblock og_type %}" />
+	<meta property="og:title" content="{% block og_title %}Lumora{% endblock og_title %}" />
+	<meta property="og:description" content="{% block og_description %}{{ config.extra.default_description }}{% endblock og_description %}" />
+	<meta property="og:url" content="{% block og_url %}{{ current_url | default(value=config.base_url) }}{% endblock og_url %}" />
+	<meta property="og:image" content="{% block og_image %}{{ config.base_url }}/favicon/web-app-manifest-512x512.png{% endblock og_image %}" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+	<link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+	<link rel="shortcut icon" href="/favicon/favicon.ico" />
+	<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+	<link rel="manifest" href="/favicon/site.webmanifest" />
+	<link rel="preload" href="/webfonts/jost-normal-400.woff2" as="font" type="font/woff2" crossorigin />
+	<link rel="preload" href="/webfonts/jost-normal-700.woff2" as="font" type="font/woff2" crossorigin />
+	<link rel="preload" href="/webfonts/gilda-display-normal-400.woff2" as="font" type="font/woff2" crossorigin />
+	<link rel="stylesheet" href="/css/main.css" />
+	<script type="application/ld+json">
+		{
+			"@context": "https://schema.org",
+			"@graph": [
+				{
+					"@type": "Person",
+					"@id": "{{ config.base_url | safe }}/#person",
+					"name": "{{ config.extra.your_name }}",
+					"alternateName": "{{ config.extra.brand }}",
+					"url": "{{ config.base_url | safe }}/",
+					"email": "{{ config.extra.email }}",
+					"jobTitle": "Photographer",
+					"description": "{{ config.extra.default_description }}",
+					"address": {
+						"@type": "PostalAddress",
+						"addressLocality": "Helsinki",
+						"addressCountry": "FI"
+					}
+				},
+				{
+					"@type": "WebSite",
+					"@id": "{{ config.base_url | safe }}/#website",
+					"name": "{{ config.extra.brand }}",
+					"url": "{{ config.base_url | safe }}/",
+					"description": "{{ config.extra.default_description }}",
+					"publisher": {
+						"@id": "{{ config.base_url | safe }}/#person"
+					},
+					"inLanguage": "en"
+				}
+			]
+		}
+	</script>
+	{% block styles %}{% endblock styles %}
+</head>
+
+<body class="{% block body_class %}page-shell{% endblock body_class %}">
+	<div id="main">
+		{% include "partials/nav.html" %}
+
+		{% block content %}{% endblock content %}
+
+		{% include "partials/footer.html" %}
+	</div>
+
+	<script>
+		const siteNav = document.querySelector('#site-nav');
+		const navToggle = document.querySelector('.site-nav__toggle');
+
+		if (siteNav && navToggle) {
+			navToggle.addEventListener('click', () => {
+				const isOpen = navToggle.getAttribute('aria-expanded') === 'true';
+				navToggle.setAttribute('aria-expanded', String(!isOpen));
+				siteNav.classList.toggle('is-open', !isOpen);
+			});
+		}
+	</script>
+	{% block scripts %}{% endblock scripts %}
+</body>
+
+</html>

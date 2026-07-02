@@ -1,0 +1,11 @@
+<nav id="site-nav" aria-label="{{ config.extra.primary_nav_label }}">
+	<a class="site-nav__brand" href="/" aria-label="{{ config.extra.home_aria_label }}">{{ config.extra.brand }}</a>
+	<button class="site-nav__toggle" type="button" aria-expanded="false" aria-controls="site-nav-links">
+		<span class="label">{{ config.extra.menu_label }}</span>
+	</button>
+	<ul id="site-nav-links" class="site-nav__links">
+		{% for item in config.extra.primary_nav %}
+		<li><a href="{{ item.url }}">{{ item.label }}</a></li>
+		{% endfor %}
+	</ul>
+</nav>

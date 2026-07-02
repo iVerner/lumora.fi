@@ -3,13 +3,8 @@
 @import 'libs/mixins';
 @import 'libs/vendor';
 @import 'libs/breakpoints';
-@import 'fonts/roboto';
-@import 'fonts/font-awesome-regular';
-/*
-	Lens by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
-*/
+@import 'fonts/jost';
+@import 'fonts/gilda-display';
 
 // Breakpoints.
 
@@ -28,16 +23,10 @@
 // Component.
 
 @import 'components/button';
-@import 'components/form';
-@import 'components/icon';
 @import 'components/list';
-@import 'components/actions';
-@import 'components/icons';
 
 // Layout.
 
 @import 'layout/main';
 @import 'layout/header';
 @import 'layout/footer';
-@import 'layout/thumbnails';
-@import 'layout/viewer';

@@ -1,61 +1,127 @@
-<!DOCTYPE HTML>
-<!--
-	Lens by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-	<title>{{ section.title }}</title>
-	<meta charset="utf-8" />
-	<meta name="description" content="Lumora. Photo gallery. Photographer Ignat Kudriavtsev. Boudoir and nude photography. Helsinki, Finland.">
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-	<link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
-	<link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
-	<link rel="shortcut icon" href="/favicon/favicon.ico" />
-	<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
-	<link rel="manifest" href="/favicon/site.webmanifest" />
-	<link rel="stylesheet" href="css/main.css" />
-	<noscript>
-		<link rel="stylesheet" href="css/noscript.css" />
-	</noscript>
-</head>
+{% block title %}{{ config.extra.home_meta_title }}{% endblock title %}
+{% block description %}{{ section.description | default(value=config.extra.default_description) }}{% endblock description %}
+{% block og_title %}{{ config.extra.home_meta_title }}{% endblock og_title %}
+{% block og_description %}{{ section.description | default(value=config.extra.default_description) }}{% endblock og_description %}
+{% block og_image -%}
+{%- set portfolio = get_section(path="portfolio/_index.md") -%}
+{%- set home_hero_images = [] -%}
+{%- for album_page in portfolio.pages -%}
+{%- set album = load_data(path="gallery/" ~ album_page.extra.slug ~ "/album.toml") -%}
+{%- set album_dimensions = load_data(path="static/gallery/" ~ album_page.extra.slug ~ "/dimensions.json") -%}
+{%- for image in album.images -%}
+{%- if image.home_hero | default(value=false) -%}
+{%- set hero_full_file = album_dimensions.images[loop.index0].seq ~ ".webp" -%}
+{%- set hero_image = album.order ~ "|||" ~ album_page.extra.slug ~ "|||" ~ hero_full_file -%}
+{%- set_global home_hero_images = home_hero_images | concat(with=[hero_image]) -%}
+{%- endif -%}
+{%- endfor -%}
+{%- endfor -%}
+{%- if home_hero_images | length != 1 -%}
+{{ throw(message="Expected exactly one image with home_hero = true") }}
+{%- endif -%}
+{%- for hero_image in home_hero_images | sort -%}
+{%- if loop.index == 1 -%}
+{%- set hero_parts = hero_image | split(pat="|||") -%}
+{{ config.base_url }}/gallery/{{ hero_parts[1] }}/{{ hero_parts[2] }}
+{%- endif -%}
+{%- endfor -%}
+{%- endblock og_image %}
 
-<body class="is-preload-0 is-preload-1 is-preload-2">
+{% block content %}
+{% set portfolio = get_section(path="portfolio/_index.md") %}
+{% set home_hero_images = [] %}
+{% set featured_images = [] %}
+{% for album_page in portfolio.pages %}
+{% set album = load_data(path="gallery/" ~ album_page.extra.slug ~ "/album.toml") %}
+{% set album_dimensions = load_data(path="static/gallery/" ~ album_page.extra.slug ~ "/dimensions.json") %}
+{% for image in album.images %}
+{% set seq = album_dimensions.images[loop.index0].seq %}
+{% set image_dimensions = album_dimensions.images[loop.index0] %}
+{% set full_file = seq ~ ".webp" %}
+{% set image_position = image.position | default(value="50% 50%") %}
+{% if image.home_hero | default(value=false) %}
+{% if not image.alt %}
+{{ throw(message="Missing alt text for home hero image " ~ album_page.extra.slug ~ "/" ~ image.file) }}
+{% endif %}
+{% set hero_image = album.order ~ "|||" ~ image.alt ~ "|||" ~ "gallery/" ~ album_page.extra.slug ~ "/" ~ full_file ~ "|||" ~ image_position ~ "|||" ~ "gallery/" ~ album_page.extra.slug ~ "/hero/" ~ full_file ~ "|||" ~ image_dimensions.full.width %}
+{% set_global home_hero_images = home_hero_images | concat(with=[hero_image]) %}
+{% endif %}
+{% if image.featured %}
+{% if not image.alt %}
+{{ throw(message="Missing alt text for featured image " ~ album_page.extra.slug ~ "/" ~ image.file) }}
+{% endif %}
+{% set featured_full_file = seq ~ ".webp" %}
+{% set featured_image = album.order ~ "|||" ~ album.title ~ "|||/portfolio/" ~ album_page.extra.slug ~ "/|||" ~ image.alt ~ "|||" ~ "gallery/" ~ album_page.extra.slug ~ "/featured/" ~ featured_full_file ~ "|||" ~ "gallery/" ~ album_page.extra.slug ~ "/" ~ featured_full_file ~ "|||" ~ image_position ~ "|||" ~ "gallery/" ~ album_page.extra.slug ~ "/featured-small/" ~ featured_full_file %}
+{% set_global featured_images = featured_images | concat(with=[featured_image]) %}
+{% endif %}
+{% endfor %}
+{% endfor %}
+{% if home_hero_images | length != 1 %}
+{{ throw(message="Expected exactly one image with home_hero = true") }}
+{% endif %}
 
-	<!-- Main -->
-	<div id="main">
-
-		<!-- Header -->
-		<header id="header">
-			<h1>{{ section.title }}</h1>
-			<h2>Boudoir and nude photography.</h2>
-			<p>Photographs by Ignat Kudriavtsev.</p>
-			<p>Helsinki, Finland</p>
-			<ul class="icons">
-				<li><a href="mailto:ignat@lumora.fi" class="icon fa-envelope" aria-label="Send the e-mail"><span class="label">Email</span></a></li>
-			</ul>
-		</header>
-
-		{% include "gallery.html" %}
-
-		<!-- Footer -->
-		<footer id="footer">
-			<ul class="copyright">
-				<li>&copy; {{ config.extra.your_name }}.</li>
-				<li>Design: <a href="http://html5up.net">HTML5 UP</a>.</li>
-			</ul>
-		</footer>
-
+<header id="header" class="home-hero">
+	{% for hero_image in home_hero_images | sort %}
+	{% if loop.index == 1 %}
+	{% set hero_parts = hero_image | split(pat="|||") %}
+	{% set hero_alt = hero_parts[1] %}
+	{% set hero_full_path = hero_parts[2] %}
+	{% set hero_position = hero_parts[3] %}
+	{% set hero_path = hero_parts[4] %}
+	{% set hero_full_width = hero_parts[5] %}
+	<img class="home-hero__image" src="/{{ hero_path }}" srcset="/{{ hero_path }} 1440w, /{{ hero_full_path }} {{ hero_full_width }}w" sizes="100vw" width="1440" height="960" alt="{{ hero_alt }}" loading="eager" fetchpriority="high" style="object-position: {{ hero_position }};">
+	{% endif %}
+	{% endfor %}
+	<div class="home-hero__content">
+	<p class="eyebrow">{{ config.extra.home_eyebrow }}</p>
+	<h1>{{ section.title }}</h1>
+	<h2>{{ config.extra.home_hero_heading }}</h2>
+	<p>{{ config.extra.home_hero_text }}</p>
+	<div class="home-hero__actions">
+		{% for action in config.extra.home_hero_actions %}
+		<a href="{{ action.url }}" class="{{ action.class }}">{{ action.label }}</a>
+		{% endfor %}
 	</div>
+	</div>
+</header>
 
-	<!-- Scripts -->
-	<script src="js/jquery.min.js"></script>
-	<script src="js/browser.min.js"></script>
-	<script src="js/breakpoints.min.js"></script>
-	<script src="js/main.min.js"></script>
+<section class="home-intro" aria-label="{{ config.extra.home_approach_label }}">
+	<p>{{ config.extra.home_intro }}</p>
+</section>
 
-</body>
+<section class="featured-preview" aria-label="{{ config.extra.home_featured_label }}">
+	<div class="section-heading">
+		<h2>{{ config.extra.home_featured_heading }}</h2>
+		<a class="text-link arrow" href="/portfolio/">{{ config.extra.home_featured_link_text }}</a>
+	</div>
+	<div class="featured-preview__grid">
+		{% for featured_image in featured_images | sort %}
+		{% if loop.index <= 6 %}
+		{% set featured_parts = featured_image | split(pat="|||") %}
+		{% set featured_album_title = featured_parts[1] %}
+		{% set featured_album_permalink = featured_parts[2] %}
+		{% set featured_alt = featured_parts[3] %}
+		{% set featured_path = featured_parts[4] %}
+		{% set featured_position = featured_parts[6] %}
+		{% set featured_small_path = featured_parts[7] %}
+		<a href="{{ featured_album_permalink | safe }}" aria-label="Open {{ featured_album_title }}">
+			<img src="/{{ featured_small_path }}" srcset="/{{ featured_small_path }} 384w, /{{ featured_path }} 672w" sizes="(max-width: 980px) calc(100vw - 2.5rem), 352px" width="384" height="512" alt="{{ featured_alt }}" loading="lazy" style="object-position: {{ featured_position }};">
+		</a>
+		{% endif %}
+		{% endfor %}
+	</div>
+</section>
 
-</html>
+<section class="process-teaser" aria-label="{{ config.extra.home_process_label }}">
+	{% for item in config.extra.home_process_teasers %}
+	<article>
+		<p class="eyebrow">{{ item.number }}</p>
+		<h2>{{ item.title }}</h2>
+		<p>{{ item.text }}</p>
+	</article>
+	{% endfor %}
+	<p class="process-teaser__link"><a class="text-link arrow" href="/process/">{{ config.extra.home_process_link_text }}</a></p>
+</section>
+{% endblock content %}

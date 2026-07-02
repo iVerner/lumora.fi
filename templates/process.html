@@ -1,0 +1,54 @@
+{% extends "page.html" %}
+
+{% block content %}
+<header id="header">
+	<p class="eyebrow">{{ page.extra.eyebrow | default(value=page.title) }}</p>
+	<h1>{{ page.title }}</h1>
+	<p>{{ page.extra.header_text }}</p>
+</header>
+
+<section class="process-page" aria-label="{{ page.extra.process_label }}">
+	{% for phase in page.extra.phases %}
+	<div class="process-phase">
+		<p class="eyebrow">{{ phase.eyebrow }}</p>
+		<h2>{{ phase.title }}</h2>
+		<div class="process-steps">
+			{% for step in phase.steps %}
+			<article>
+				<h3>{{ step.title }}</h3>
+				<p>{{ step.text }}</p>
+			</article>
+			{% endfor %}
+		</div>
+	</div>
+	{% endfor %}
+
+	<section class="faq-accordion" aria-label="{{ page.extra.faq_label }}">
+		<h2>{{ page.extra.faq_heading }}</h2>
+		{% for item in page.extra.faq %}
+		<div class="faq-item">
+			<button type="button" aria-expanded="false" aria-controls="faq-{{ item.id }}">{{ item.question }}</button>
+			<p id="faq-{{ item.id }}" hidden>{{ item.answer }}</p>
+		</div>
+		{% endfor %}
+	</section>
+</section>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+	document.querySelectorAll('.faq-accordion button[aria-controls]').forEach((button) => {
+		const panel = document.getElementById(button.getAttribute('aria-controls'));
+
+		if (!panel) {
+			return;
+		}
+
+		button.addEventListener('click', () => {
+			const isOpen = button.getAttribute('aria-expanded') === 'true';
+			button.setAttribute('aria-expanded', String(!isOpen));
+			panel.hidden = isOpen;
+		});
+	});
+</script>
+{% endblock scripts %}
