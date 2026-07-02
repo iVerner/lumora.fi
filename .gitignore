@@ -4,6 +4,11 @@
 /.idea/modules.xml
 /.idea/vcs.xml
 /Figma design/
+/.wrangler/
+.DS_Store
+**/.DS_Store
+__pycache__/
+*.py[cod]
 content/portfolio/
 gallery/
 public/
