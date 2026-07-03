@@ -12,9 +12,9 @@
 	<h2>{{ page.extra.application_heading }}</h2>
 	<p>{{ page.extra.application_intro }}</p>
 	<ul class="marker-list">
-		{% for item in page.extra.application_items %}
+{% for item in page.extra.application_items -%}
 		<li>{{ item }}</li>
-		{% endfor %}
+{% endfor -%}
 	</ul>
 	<p>{{ page.extra.couples_note }}</p>
 	<p class="fine-note">{{ page.extra.fine_note }}</p>

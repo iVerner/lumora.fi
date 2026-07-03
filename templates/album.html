@@ -11,18 +11,17 @@
 <link rel="stylesheet" href="/vendor/photoswipe/photoswipe.css" />
 {% endblock styles %}
 
-{% block content %}
-{% set album = load_data(path="gallery/" ~ page.extra.slug ~ "/album.toml") %}
-{% set album_year = album.year | default(value="") %}
+{% block content -%}
+{% set album = load_data(path="gallery/" ~ page.extra.slug ~ "/album.toml") -%}
+{% set album_year = album.year | default(value="") -%}
 <header id="header" class="page-header page-header--wide album-header">
 	{% if album_year %}<p class="eyebrow">{{ album_year }}</p>{% endif %}
 	<h1>{{ album.title }}</h1>
 	<p>{{ album.description }}</p>
 	<p><a class="text-link" href="/portfolio/">{{ config.extra.portfolio_back_label }}</a></p>
 </header>
-
-{% include "partials/gallery-grid.html" %}
-{% endblock content %}
+{% include "partials/gallery-grid.html" -%}
+{% endblock content -%}
 
 {% block scripts %}
 <script type="module" src="/js/photoswipe-gallery.js"></script>

@@ -4,8 +4,8 @@
 		<span class="label">{{ config.extra.menu_label }}</span>
 	</button>
 	<ul id="site-nav-links" class="site-nav__links">
-		{% for item in config.extra.primary_nav %}
+{% for item in config.extra.primary_nav -%}
 		<li><a href="{{ item.url }}">{{ item.label }}</a></li>
-		{% endfor %}
+{% endfor -%}
 	</ul>
 </nav>

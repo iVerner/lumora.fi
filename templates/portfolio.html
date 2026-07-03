@@ -5,35 +5,35 @@
 {% block og_title %}{{ section.title }} | Lumora{% endblock og_title %}
 {% block og_description %}{{ config.extra.portfolio_description }}{% endblock og_description %}
 
-{% block content %}
+{% block content -%}
 <header id="header" class="page-header page-header--wide">
 	<p class="eyebrow">{{ config.extra.portfolio_eyebrow }}</p>
 	<h1>{{ config.extra.portfolio_heading }}</h1>
 	<p>{{ config.extra.portfolio_intro }}</p>
 </header>
 
-{% set album_entries = [] %}
-{% for album_page in section.pages %}
-{% set album = load_data(path="gallery/" ~ album_page.extra.slug ~ "/album.toml") %}
-{% set album_dimensions = load_data(path="static/gallery/" ~ album_page.extra.slug ~ "/dimensions.json") %}
-{% set album_cover_position = album.cover_position | default(value="50% 50%") %}
-{% set album_year = album.year | default(value="") %}
-{% set album_entry = album.order ~ "|||" ~ album_page.extra.slug ~ "|||/portfolio/" ~ album_page.extra.slug ~ "/|||" ~ album.title ~ "|||" ~ album.description ~ "|||" ~ album_dimensions.cover_seq ~ "|||" ~ album_cover_position ~ "|||" ~ album_year %}
-{% set_global album_entries = album_entries | concat(with=[album_entry]) %}
-{% endfor %}
+{% set album_entries = [] -%}
+{% for album_page in section.pages -%}
+{% set album = load_data(path="gallery/" ~ album_page.extra.slug ~ "/album.toml") -%}
+{% set album_dimensions = load_data(path="static/gallery/" ~ album_page.extra.slug ~ "/dimensions.json") -%}
+{% set album_cover_position = album.cover_position | default(value="50% 50%") -%}
+{% set album_year = album.year | default(value="") -%}
+{% set album_entry = album.order ~ "|||" ~ album_page.extra.slug ~ "|||/portfolio/" ~ album_page.extra.slug ~ "/|||" ~ album.title ~ "|||" ~ album.description ~ "|||" ~ album_dimensions.cover_seq ~ "|||" ~ album_cover_position ~ "|||" ~ album_year -%}
+{% set_global album_entries = album_entries | concat(with=[album_entry]) -%}
+{% endfor -%}
 
 <section class="album-grid" aria-label="Portfolio albums">
-	{% for album_entry in album_entries | sort %}
-	{% set album_parts = album_entry | split(pat="|||") %}
-	{% set album_card_slug = album_parts[1] %}
-	{% set album_card_permalink = album_parts[2] %}
-	{% set album_card_title = album_parts[3] %}
-	{% set album_card_description = album_parts[4] %}
-	{% set album_card_cover = album_parts[5] %}
-	{% set album_card_cover_position = album_parts[6] %}
-	{% set album_card_year = album_parts[7] %}
-	{% set album_card_is_priority = loop.index == 1 %}
+{% for album_entry in album_entries | sort -%}
+{% set album_parts = album_entry | split(pat="|||") -%}
+{% set album_card_slug = album_parts[1] -%}
+{% set album_card_permalink = album_parts[2] -%}
+{% set album_card_title = album_parts[3] -%}
+{% set album_card_description = album_parts[4] -%}
+{% set album_card_cover = album_parts[5] -%}
+{% set album_card_cover_position = album_parts[6] -%}
+{% set album_card_year = album_parts[7] -%}
+{% set album_card_is_priority = loop.index == 1 -%}
 	{% include "partials/album-card.html" %}
-	{% endfor %}
+{% endfor -%}
 </section>
 {% endblock content %}

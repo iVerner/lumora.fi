@@ -1,35 +1,35 @@
 {% extends "page.html" %}
 
-{% block content %}
-{% set portfolio = get_section(path="portfolio/_index.md") %}
-{% set about_images = [] %}
-{% for album_page in portfolio.pages %}
-{% set album = load_data(path="gallery/" ~ album_page.extra.slug ~ "/album.toml") %}
-{% set album_dimensions = load_data(path="static/gallery/" ~ album_page.extra.slug ~ "/dimensions.json") %}
-{% for image in album.images %}
-{% if image.about_image | default(value=false) %}
-{% if not image.alt %}
+{% block content -%}
+{% set portfolio = get_section(path="portfolio/_index.md") -%}
+{% set about_images = [] -%}
+{% for album_page in portfolio.pages -%}
+{% set album = load_data(path="gallery/" ~ album_page.extra.slug ~ "/album.toml") -%}
+{% set album_dimensions = load_data(path="static/gallery/" ~ album_page.extra.slug ~ "/dimensions.json") -%}
+{% for image in album.images -%}
+{% if image.about_image | default(value=false) -%}
+{% if not image.alt -%}
 {{ throw(message="Missing alt text for about image " ~ album_page.extra.slug ~ "/" ~ image.file) }}
-{% endif %}
-{% set seq = album_dimensions.images[loop.index0].seq %}
-{% set image_position = image.position | default(value="50% 50%") %}
-{% set about_image = album.order ~ "|||" ~ image.alt ~ "|||" ~ "gallery/" ~ album_page.extra.slug ~ "/" ~ seq ~ ".webp" ~ "|||" ~ image_position %}
-{% set_global about_images = about_images | concat(with=[about_image]) %}
-{% endif %}
-{% endfor %}
-{% endfor %}
-{% if about_images | length != 1 %}
+{% endif -%}
+{% set seq = album_dimensions.images[loop.index0].seq -%}
+{% set image_position = image.position | default(value="50% 50%") -%}
+{% set about_image = album.order ~ "|||" ~ image.alt ~ "|||" ~ "gallery/" ~ album_page.extra.slug ~ "/" ~ seq ~ ".webp" ~ "|||" ~ image_position -%}
+{% set_global about_images = about_images | concat(with=[about_image]) -%}
+{% endif -%}
+{% endfor -%}
+{% endfor -%}
+{% if about_images | length != 1 -%}
 {{ throw(message="Expected exactly one image with about_image = true") }}
-{% endif %}
+{% endif -%}
 
 <section class="about-layout">
 	<figure class="about-layout__image">
-		{% for about_image in about_images | sort %}
-		{% if loop.index == 1 %}
-		{% set image_parts = about_image | split(pat="|||") %}
+{% for about_image in about_images | sort -%}
+{% if loop.index == 1 -%}
+{% set image_parts = about_image | split(pat="|||") -%}
 		<img src="/{{ image_parts[2] }}" alt="{{ image_parts[1] }}" loading="lazy" style="object-position: {{ image_parts[3] }};">
-		{% endif %}
-		{% endfor %}
+{% endif -%}
+{% endfor -%}
 	</figure>
 	<div class="page-content about-layout__content">
 		<header class="about-layout__header">
@@ -38,18 +38,18 @@
 		</header>
 		{{ page.content | safe }}
 		<dl class="fact-list">
-			{% for fact in page.extra.facts %}
+{% for fact in page.extra.facts -%}
 			<div>
 				<dt>{{ fact.label }}</dt>
 				<dd>
-					{% if fact.url %}
+{% if fact.url -%}
 					<a href="{{ fact.url }}">{{ fact.value }}</a>
-					{% else %}
+{% else -%}
 					{{ fact.value }}
-					{% endif %}
+{% endif -%}
 				</dd>
 			</div>
-			{% endfor %}
+{% endfor -%}
 		</dl>
 	</div>
 </section>

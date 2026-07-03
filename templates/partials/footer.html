@@ -5,9 +5,9 @@
 		<p>{{ config.extra.location }}</p>
 	</div>
 	<nav class="footer-nav" aria-label="{{ config.extra.secondary_nav_label }}">
-		{% for item in config.extra.footer_nav %}
+{% for item in config.extra.footer_nav -%}
 		<a href="{{ item.url }}">{{ item.label }}</a>
-		{% endfor %}
+{% endfor -%}
 	</nav>
 	<div class="footer-contact">
 		<a href="mailto:{{ config.extra.email }}">{{ config.extra.email }}</a>

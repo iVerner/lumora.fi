@@ -8,29 +8,29 @@
 </header>
 
 <section class="process-page" aria-label="{{ page.extra.process_label }}">
-	{% for phase in page.extra.phases %}
+{% for phase in page.extra.phases -%}
 	<div class="process-phase">
 		<p class="eyebrow">{{ phase.eyebrow }}</p>
 		<h2>{{ phase.title }}</h2>
 		<div class="process-steps">
-			{% for step in phase.steps %}
+{% for step in phase.steps -%}
 			<article>
 				<h3>{{ step.title }}</h3>
 				<p>{{ step.text }}</p>
 			</article>
-			{% endfor %}
+{% endfor -%}
 		</div>
 	</div>
-	{% endfor %}
+{% endfor -%}
 
 	<section class="faq-accordion" aria-label="{{ page.extra.faq_label }}">
 		<h2>{{ page.extra.faq_heading }}</h2>
-		{% for item in page.extra.faq %}
+{% for item in page.extra.faq -%}
 		<div class="faq-item">
 			<button type="button" aria-expanded="false" aria-controls="faq-{{ item.id }}">{{ item.question }}</button>
 			<p id="faq-{{ item.id }}" hidden>{{ item.answer }}</p>
 		</div>
-		{% endfor %}
+{% endfor -%}
 	</section>
 </section>
 {% endblock content %}

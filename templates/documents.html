@@ -8,7 +8,7 @@
 </header>
 
 <section class="documents-layout" aria-label="{{ page.extra.documents_label }}">
-	{% for document in page.extra.documents %}
+{% for document in page.extra.documents -%}
 	<article class="document-card">
 		<div>
 			<p class="eyebrow">{{ document.eyebrow }}</p>
@@ -17,12 +17,12 @@
 		</div>
 		<a class="button" href="{{ document.url }}">{{ document.label }}</a>
 	</article>
-	{% endfor %}
+{% endfor -%}
 </section>
 
 <section class="page-content page-content--narrow documents-note" aria-label="{{ page.extra.notes_label }}">
-	{% for note in page.extra.notes %}
+{% for note in page.extra.notes -%}
 	<p>{{ note }}</p>
-	{% endfor %}
+{% endfor -%}
 </section>
 {% endblock content %}

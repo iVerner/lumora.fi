@@ -1,18 +1,18 @@
 <section id="album-gallery" class="album-flow" aria-label="{{ album.title }} images">
-	{% set dimensions = load_data(path="static/gallery/" ~ page.extra.slug ~ "/dimensions.json") %}
-	{% for image in album.images %}
-	{% if not image.alt %}
+{% set dimensions = load_data(path="static/gallery/" ~ page.extra.slug ~ "/dimensions.json") -%}
+{% for image in album.images -%}
+{% if not image.alt -%}
 	{{ throw(message="Missing alt text for " ~ page.extra.slug ~ "/" ~ image.file) }}
-	{% endif %}
-	{% set seq = dimensions.images[loop.index0].seq %}
-	{% set full_path = "gallery/" ~ page.extra.slug ~ "/" ~ seq ~ ".webp" %}
-	{% set preview_path = "gallery/" ~ page.extra.slug ~ "/previews/" ~ seq ~ ".webp" %}
-	{% set image_position = image.position | default(value="50% 50%") %}
-	{% set image_dimensions = dimensions.images[loop.index0] %}
+{% endif -%}
+{% set seq = dimensions.images[loop.index0].seq -%}
+{% set full_path = "gallery/" ~ page.extra.slug ~ "/" ~ seq ~ ".webp" -%}
+{% set preview_path = "gallery/" ~ page.extra.slug ~ "/previews/" ~ seq ~ ".webp" -%}
+{% set image_position = image.position | default(value="50% 50%") -%}
+{% set image_dimensions = dimensions.images[loop.index0] -%}
 	<article class="album-flow__item">
 		<a href="/{{ full_path }}" data-pswp-width="{{ image_dimensions.full.width }}" data-pswp-height="{{ image_dimensions.full.height }}" data-cropped="true" target="_blank" aria-label="Open image: {{ image.alt }}">
 			<img src="/{{ preview_path }}" width="{{ image_dimensions.preview.width }}" height="{{ image_dimensions.preview.height }}" alt="{{ image.alt }}" loading="{% if loop.index <= 2 %}eager{% else %}lazy{% endif %}"{% if loop.index == 1 %} fetchpriority="high"{% endif %} style="object-position: {{ image_position }};">
 		</a>
 	</article>
-	{% endfor %}
+{% endfor -%}
 </section>

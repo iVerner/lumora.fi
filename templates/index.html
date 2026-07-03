@@ -29,60 +29,60 @@
 {%- endfor -%}
 {%- endblock og_image %}
 
-{% block content %}
-{% set portfolio = get_section(path="portfolio/_index.md") %}
-{% set home_hero_images = [] %}
-{% set featured_images = [] %}
-{% for album_page in portfolio.pages %}
-{% set album = load_data(path="gallery/" ~ album_page.extra.slug ~ "/album.toml") %}
-{% set album_dimensions = load_data(path="static/gallery/" ~ album_page.extra.slug ~ "/dimensions.json") %}
-{% for image in album.images %}
-{% set seq = album_dimensions.images[loop.index0].seq %}
-{% set image_dimensions = album_dimensions.images[loop.index0] %}
-{% set full_file = seq ~ ".webp" %}
-{% set image_position = image.position | default(value="50% 50%") %}
-{% if image.home_hero | default(value=false) %}
-{% if not image.alt %}
+{% block content -%}
+{% set portfolio = get_section(path="portfolio/_index.md") -%}
+{% set home_hero_images = [] -%}
+{% set featured_images = [] -%}
+{% for album_page in portfolio.pages -%}
+{% set album = load_data(path="gallery/" ~ album_page.extra.slug ~ "/album.toml") -%}
+{% set album_dimensions = load_data(path="static/gallery/" ~ album_page.extra.slug ~ "/dimensions.json") -%}
+{% for image in album.images -%}
+{% set seq = album_dimensions.images[loop.index0].seq -%}
+{% set image_dimensions = album_dimensions.images[loop.index0] -%}
+{% set full_file = seq ~ ".webp" -%}
+{% set image_position = image.position | default(value="50% 50%") -%}
+{% if image.home_hero | default(value=false) -%}
+{% if not image.alt -%}
 {{ throw(message="Missing alt text for home hero image " ~ album_page.extra.slug ~ "/" ~ image.file) }}
-{% endif %}
-{% set hero_image = album.order ~ "|||" ~ image.alt ~ "|||" ~ "gallery/" ~ album_page.extra.slug ~ "/" ~ full_file ~ "|||" ~ image_position ~ "|||" ~ "gallery/" ~ album_page.extra.slug ~ "/hero/" ~ full_file ~ "|||" ~ image_dimensions.full.width %}
-{% set_global home_hero_images = home_hero_images | concat(with=[hero_image]) %}
-{% endif %}
-{% if image.featured %}
-{% if not image.alt %}
+{% endif -%}
+{% set hero_image = album.order ~ "|||" ~ image.alt ~ "|||" ~ "gallery/" ~ album_page.extra.slug ~ "/" ~ full_file ~ "|||" ~ image_position ~ "|||" ~ "gallery/" ~ album_page.extra.slug ~ "/hero/" ~ full_file ~ "|||" ~ image_dimensions.full.width -%}
+{% set_global home_hero_images = home_hero_images | concat(with=[hero_image]) -%}
+{% endif -%}
+{% if image.featured -%}
+{% if not image.alt -%}
 {{ throw(message="Missing alt text for featured image " ~ album_page.extra.slug ~ "/" ~ image.file) }}
-{% endif %}
-{% set featured_full_file = seq ~ ".webp" %}
-{% set featured_image = album.order ~ "|||" ~ album.title ~ "|||/portfolio/" ~ album_page.extra.slug ~ "/|||" ~ image.alt ~ "|||" ~ "gallery/" ~ album_page.extra.slug ~ "/featured/" ~ featured_full_file ~ "|||" ~ "gallery/" ~ album_page.extra.slug ~ "/" ~ featured_full_file ~ "|||" ~ image_position ~ "|||" ~ "gallery/" ~ album_page.extra.slug ~ "/featured-small/" ~ featured_full_file %}
-{% set_global featured_images = featured_images | concat(with=[featured_image]) %}
-{% endif %}
-{% endfor %}
-{% endfor %}
-{% if home_hero_images | length != 1 %}
+{% endif -%}
+{% set featured_full_file = seq ~ ".webp" -%}
+{% set featured_image = album.order ~ "|||" ~ album.title ~ "|||/portfolio/" ~ album_page.extra.slug ~ "/|||" ~ image.alt ~ "|||" ~ "gallery/" ~ album_page.extra.slug ~ "/featured/" ~ featured_full_file ~ "|||" ~ "gallery/" ~ album_page.extra.slug ~ "/" ~ featured_full_file ~ "|||" ~ image_position ~ "|||" ~ "gallery/" ~ album_page.extra.slug ~ "/featured-small/" ~ featured_full_file -%}
+{% set_global featured_images = featured_images | concat(with=[featured_image]) -%}
+{% endif -%}
+{% endfor -%}
+{% endfor -%}
+{% if home_hero_images | length != 1 -%}
 {{ throw(message="Expected exactly one image with home_hero = true") }}
-{% endif %}
+{% endif -%}
 
 <header id="header" class="home-hero">
-	{% for hero_image in home_hero_images | sort %}
-	{% if loop.index == 1 %}
-	{% set hero_parts = hero_image | split(pat="|||") %}
-	{% set hero_alt = hero_parts[1] %}
-	{% set hero_full_path = hero_parts[2] %}
-	{% set hero_position = hero_parts[3] %}
-	{% set hero_path = hero_parts[4] %}
-	{% set hero_full_width = hero_parts[5] %}
+{% for hero_image in home_hero_images | sort -%}
+{% if loop.index == 1 -%}
+{% set hero_parts = hero_image | split(pat="|||") -%}
+{% set hero_alt = hero_parts[1] -%}
+{% set hero_full_path = hero_parts[2] -%}
+{% set hero_position = hero_parts[3] -%}
+{% set hero_path = hero_parts[4] -%}
+{% set hero_full_width = hero_parts[5] -%}
 	<img class="home-hero__image" src="/{{ hero_path }}" srcset="/{{ hero_path }} 1440w, /{{ hero_full_path }} {{ hero_full_width }}w" sizes="100vw" width="1440" height="960" alt="{{ hero_alt }}" loading="eager" fetchpriority="high" style="object-position: {{ hero_position }};">
-	{% endif %}
-	{% endfor %}
+{% endif -%}
+{% endfor -%}
 	<div class="home-hero__content">
 	<p class="eyebrow">{{ config.extra.home_eyebrow }}</p>
 	<h1>{{ section.title }}</h1>
 	<h2>{{ config.extra.home_hero_heading }}</h2>
 	<p>{{ config.extra.home_hero_text }}</p>
 	<div class="home-hero__actions">
-		{% for action in config.extra.home_hero_actions %}
+{% for action in config.extra.home_hero_actions -%}
 		<a href="{{ action.url }}" class="{{ action.class }}">{{ action.label }}</a>
-		{% endfor %}
+{% endfor -%}
 	</div>
 	</div>
 </header>
@@ -97,31 +97,31 @@
 		<a class="text-link arrow" href="/portfolio/">{{ config.extra.home_featured_link_text }}</a>
 	</div>
 	<div class="featured-preview__grid">
-		{% for featured_image in featured_images | sort %}
-		{% if loop.index <= 6 %}
-		{% set featured_parts = featured_image | split(pat="|||") %}
-		{% set featured_album_title = featured_parts[1] %}
-		{% set featured_album_permalink = featured_parts[2] %}
-		{% set featured_alt = featured_parts[3] %}
-		{% set featured_path = featured_parts[4] %}
-		{% set featured_position = featured_parts[6] %}
-		{% set featured_small_path = featured_parts[7] %}
+{% for featured_image in featured_images | sort -%}
+{% if loop.index <= 6 -%}
+{% set featured_parts = featured_image | split(pat="|||") -%}
+{% set featured_album_title = featured_parts[1] -%}
+{% set featured_album_permalink = featured_parts[2] -%}
+{% set featured_alt = featured_parts[3] -%}
+{% set featured_path = featured_parts[4] -%}
+{% set featured_position = featured_parts[6] -%}
+{% set featured_small_path = featured_parts[7] -%}
 		<a href="{{ featured_album_permalink | safe }}" aria-label="Open {{ featured_album_title }}">
 			<img src="/{{ featured_small_path }}" srcset="/{{ featured_small_path }} 384w, /{{ featured_path }} 672w" sizes="(max-width: 980px) calc(100vw - 2.5rem), 352px" width="384" height="512" alt="{{ featured_alt }}" loading="lazy" style="object-position: {{ featured_position }};">
 		</a>
-		{% endif %}
-		{% endfor %}
+{% endif -%}
+{% endfor -%}
 	</div>
 </section>
 
 <section class="process-teaser" aria-label="{{ config.extra.home_process_label }}">
-	{% for item in config.extra.home_process_teasers %}
+{% for item in config.extra.home_process_teasers -%}
 	<article>
 		<p class="eyebrow">{{ item.number }}</p>
 		<h2>{{ item.title }}</h2>
 		<p>{{ item.text }}</p>
 	</article>
-	{% endfor %}
+{% endfor -%}
 	<p class="process-teaser__link"><a class="text-link arrow" href="/process/">{{ config.extra.home_process_link_text }}</a></p>
 </section>
 {% endblock content %}

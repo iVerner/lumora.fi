@@ -56,15 +56,13 @@
 			]
 		}
 	</script>
-	{% block styles %}{% endblock styles %}
+{% block styles %}{% endblock styles -%}
 </head>
 
 <body class="{% block body_class %}page-shell{% endblock body_class %}">
 	<div id="main">
-		{% include "partials/nav.html" %}
-
-		{% block content %}{% endblock content %}
-
+		{% include "partials/nav.html" -%}
+		{% block content %}{% endblock content -%}
 		{% include "partials/footer.html" %}
 	</div>
 
@@ -80,7 +78,7 @@
 			});
 		}
 	</script>
-	{% block scripts %}{% endblock scripts %}
+{% block scripts %}{% endblock scripts -%}
 </body>
 
 </html>
