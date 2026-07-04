@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}{{ section.title }} | Lumora{% endblock title %}
+{% block title %}{{ section.title }} | {{ config.extra.brand }}{% endblock title %}
 {% block description %}{{ config.extra.portfolio_description }}{% endblock description %}
-{% block og_title %}{{ section.title }} | Lumora{% endblock og_title %}
+{% block og_title %}{{ section.title }} | {{ config.extra.brand }}{% endblock og_title %}
 {% block og_description %}{{ config.extra.portfolio_description }}{% endblock og_description %}
 
 {% block content -%}

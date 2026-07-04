@@ -3,6 +3,7 @@ title = "Process"
 description = "How a Lumora TFP shoot works before, during, and after the session, including boundaries, privacy, selection, retouching, and publication approval."
 template = "process.html"
 [extra]
+meta_title = "Process — How a TFP Shoot Works"
 eyebrow = "How we work"
 header_text = "Every collaboration follows a clear structure: not because the work is rigid, but because clarity makes the creative space feel safe and open."
 process_label = "Process"

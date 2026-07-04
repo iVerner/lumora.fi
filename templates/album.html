@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}{% set album = load_data(path="gallery/" ~ page.extra.slug ~ "/album.toml") %}{{ album.title }} | Lumora{% endblock title %}
+{% block title %}{% set album = load_data(path="gallery/" ~ page.extra.slug ~ "/album.toml") %}{{ album.title }} | {{ config.extra.brand }}{% endblock title %}
 {% block description %}{% set album = load_data(path="gallery/" ~ page.extra.slug ~ "/album.toml") %}{{ album.description }}{% endblock description %}
 {% block og_type %}article{% endblock og_type %}
-{% block og_title %}{% set album = load_data(path="gallery/" ~ page.extra.slug ~ "/album.toml") %}{{ album.title }} | Lumora{% endblock og_title %}
+{% block og_title %}{% set album = load_data(path="gallery/" ~ page.extra.slug ~ "/album.toml") %}{{ album.title }} | {{ config.extra.brand }}{% endblock og_title %}
 {% block og_description %}{% set album = load_data(path="gallery/" ~ page.extra.slug ~ "/album.toml") %}{{ album.description }}{% endblock og_description %}
 {% block og_image %}{% set album = load_data(path="gallery/" ~ page.extra.slug ~ "/album.toml") %}{% set album_dimensions = load_data(path="static/gallery/" ~ page.extra.slug ~ "/dimensions.json") %}{{ config.base_url }}/gallery/{{ page.extra.slug }}/{{ album_dimensions.cover_seq }}.webp{% endblock og_image %}
 

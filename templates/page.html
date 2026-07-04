@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}{{ page.title }} | Lumora{% endblock title %}
+{% block title %}{{ page.extra.meta_title | default(value=page.title) }} | {{ config.extra.brand }}{% endblock title %}
 {% block description %}{{ page.description | default(value=config.extra.default_description) }}{% endblock description %}
-{% block og_title %}{{ page.title }} | Lumora{% endblock og_title %}
+{% block og_title %}{{ page.extra.meta_title | default(value=page.title) }} | {{ config.extra.brand }}{% endblock og_title %}
 {% block og_description %}{{ page.description | default(value=config.extra.default_description) }}{% endblock og_description %}
 
 {% block content %}

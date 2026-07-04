@@ -2,14 +2,14 @@
 <html lang="en">
 
 <head>
-	<title>{% block title %}Lumora{% endblock title %}</title>
+	<title>{% block title %}{{ config.extra.brand }}{% endblock title %}</title>
 	<meta charset="utf-8">
 	<meta name="description" content="{% block description %}{{ config.extra.default_description }}{% endblock description %}">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="canonical" href="{% block canonical %}{{ current_url | default(value=config.base_url) }}{% endblock canonical %}">
-	<meta property="og:site_name" content="Lumora">
+	<meta property="og:site_name" content="{{ config.extra.brand }}">
 	<meta property="og:type" content="{% block og_type %}website{% endblock og_type %}">
-	<meta property="og:title" content="{% block og_title %}Lumora{% endblock og_title %}">
+	<meta property="og:title" content="{% block og_title %}{{ config.extra.brand }}{% endblock og_title %}">
 	<meta property="og:description" content="{% block og_description %}{{ config.extra.default_description }}{% endblock og_description %}">
 	<meta property="og:url" content="{% block og_url %}{{ current_url | default(value=config.base_url) }}{% endblock og_url %}">
 	<meta property="og:image" content="{% block og_image %}{{ config.base_url }}/favicon/web-app-manifest-512x512.png{% endblock og_image %}">

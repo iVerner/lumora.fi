@@ -1,5 +1,5 @@
 +++
-title = "About"
+title = "About — Helsinki Boudoir Photographer"
 description = "About Lumora and Ignat Kudriavtsev, a Helsinki-based boudoir and fine art nude photography project focused on calm TFP collaboration."
 template = "about.html"
 [extra]

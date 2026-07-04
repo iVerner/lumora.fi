@@ -3,6 +3,7 @@ title = "Contact"
 description = "Contact Lumora for TFP collaboration by email. What to include when applying for a boudoir or fine art nude photography shoot."
 template = "contact.html"
 [extra]
+meta_title = "Contact — TFP Boudoir Collaboration"
 eyebrow = "Contact"
 header_eyebrow = "Get in touch"
 header_text = "All contact is by email. There is no form, booking system, or automated response: send a simple note with your idea, availability, and privacy preferences."

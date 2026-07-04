@@ -3,6 +3,7 @@ title = "Documents"
 description = "Draft reference documents for TFP collaboration, including a TFP agreement, model release, and client release. Not legal advice."
 template = "documents.html"
 [extra]
+meta_title = "Documents — TFP Agreement & Model Release"
 eyebrow = "Documents"
 header_eyebrow = "Reference documents"
 header_text = "Draft reference documents for TFP collaboration. The agreement describes the shoot, the releases describe image use, and all documents are provided for clarity, not as legal advice."
